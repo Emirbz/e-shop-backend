@@ -13,7 +13,7 @@ public class Product {
     private String name;
     private String description;
     private String color;
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Size> sizes;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;

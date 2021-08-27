@@ -17,6 +17,10 @@ public class Category {
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Set<Product> products;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private Set<SubCategory> subCategories;
+
     public Category() {
         this.products = new HashSet<>();
     }
@@ -62,5 +66,13 @@ public class Category {
 
     public void removeProduct(Long productId) {
         this.products.removeIf(p -> p.getId().equals(productId));
+    }
+
+    public Set<SubCategory> getSubCategories() {
+        return subCategories;
+    }
+
+    public void setSubCategories(Set<SubCategory> subCategories) {
+        this.subCategories = subCategories;
     }
 }
