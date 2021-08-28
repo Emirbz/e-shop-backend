@@ -66,7 +66,6 @@ public class ProductController {
                     product.setSubCategory(newProduct.getSubCategory());
                     product.setCategory(newProduct.getCategory());
                     product.setCollection(newProduct.getCollection());
-                    product.setColor(newProduct.getColor());
                     product.setDescription(newProduct.getDescription());
                     product.setGender(newProduct.getGender());
                     product.setPrice(newProduct.getPrice());
