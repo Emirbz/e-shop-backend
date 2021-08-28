@@ -14,14 +14,32 @@ public class Picture {
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
     private Product product;
+    private String url;
+
+    public Picture(String filename, Long productId) {
+        this.name = filename;
+        this.url = "http://localhost/e-shop-backend/uploads/" + filename;
+        this.product = new Product();
+        this.product.setId(productId);
+    }
+
+    public Picture(String filename, String url) {
+        this.name = filename;
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public Picture() {
-
+        super();
     }
 
-    public Picture(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;

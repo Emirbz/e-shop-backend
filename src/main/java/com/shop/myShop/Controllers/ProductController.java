@@ -23,7 +23,7 @@ import java.math.RoundingMode;
 import java.util.Date;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200",maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping("products")
 public class ProductController {
 
@@ -63,6 +63,7 @@ public class ProductController {
         Product p = productRepository.findById(id)
                 .map(product -> {
                     product.setName(newProduct.getName());
+                    product.setSubCategory(newProduct.getSubCategory());
                     product.setCategory(newProduct.getCategory());
                     product.setCollection(newProduct.getCollection());
                     product.setColor(newProduct.getColor());
@@ -71,6 +72,8 @@ public class ProductController {
                     product.setPrice(newProduct.getPrice());
                     product.setSizes(newProduct.getSizes());
                     product.setStatus(newProduct.getStatus());
+                    product.setSizes(newProduct.getSizes());
+                    product.setPictures(newProduct.getPictures());
                     return productRepository.save(product);
                 }).orElse(null);
         if (p != null)
@@ -123,6 +126,4 @@ public class ProductController {
         }
         return ResponseEntity.ok(p);
     }
-
-
 }
