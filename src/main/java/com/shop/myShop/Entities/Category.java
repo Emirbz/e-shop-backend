@@ -21,6 +21,9 @@ public class Category {
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Set<SubCategory> subCategories;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private Picture picture;
+
     public Category() {
         this.products = new HashSet<>();
     }
@@ -61,7 +64,7 @@ public class Category {
 
     public void addProduct(Product product) {
         getProducts().add(product);
-        product.setCategory(this);
+//        product.setCategory(this);
     }
 
     public void removeProduct(Long productId) {

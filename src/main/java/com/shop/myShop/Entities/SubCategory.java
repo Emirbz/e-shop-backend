@@ -1,6 +1,9 @@
 package com.shop.myShop.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class SubCategory {
@@ -12,11 +15,24 @@ public class SubCategory {
 
     private String name;
 
-    @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Picture picture;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
     private Category category;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "subCategory", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private List<Product> products;
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
     public Long getId() {
         return id;

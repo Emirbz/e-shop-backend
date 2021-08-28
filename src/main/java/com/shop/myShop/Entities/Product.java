@@ -1,5 +1,8 @@
 package com.shop.myShop.Entities;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +16,8 @@ public class Product {
     private String name;
     private String description;
     private String color;
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Size> sizes;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
@@ -21,12 +25,15 @@ public class Product {
     private Gender gender;
     @ManyToOne(cascade = CascadeType.MERGE)
     private Category category;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private SubCategory subCategory;
     @Enumerated(EnumType.STRING)
     private Collection collection;
     private Double price;
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Picture> pictures;
 
     @Transient
@@ -155,4 +162,14 @@ public class Product {
     public void setNewPrice(Double newPrice) {
         this.newPrice = newPrice;
     }
+
+
+    public SubCategory getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(SubCategory subCategory) {
+        this.subCategory = subCategory;
+    }
+
 }
