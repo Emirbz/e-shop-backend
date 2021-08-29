@@ -15,7 +15,6 @@ public class Product {
     Long id;
     private String name;
     private String description;
-    private String color;
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Size> sizes;
@@ -44,10 +43,9 @@ public class Product {
     }
 
 
-    public Product(String name, String description, String color, List<Size> sizes, Gender gender, Collection collection, Category category, Double price, ProductStatus status, List<Picture> pictures) {
+    public Product(String name, String description, List<Size> sizes, Gender gender, Collection collection, Category category, Double price, ProductStatus status, List<Picture> pictures) {
         this.name = name;
         this.description = description;
-        this.color = color;
         this.sizes = sizes;
         this.gender = gender;
         this.collection = collection;
@@ -83,13 +81,6 @@ public class Product {
         this.description = description;
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
 
     public List<Size> getSizes() {
         return sizes;
