@@ -13,13 +13,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     private String name;
-
     @JsonIgnore
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Set<Product> products;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private Set<SubCategory> subCategories;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Picture picture;
@@ -71,11 +67,4 @@ public class Category {
         this.products.removeIf(p -> p.getId().equals(productId));
     }
 
-    public Set<SubCategory> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(Set<SubCategory> subCategories) {
-        this.subCategories = subCategories;
-    }
 }

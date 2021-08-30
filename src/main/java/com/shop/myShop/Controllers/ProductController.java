@@ -63,7 +63,6 @@ public class ProductController {
         Product p = productRepository.findById(id)
                 .map(product -> {
                     product.setName(newProduct.getName());
-                    product.setSubCategory(newProduct.getSubCategory());
                     product.setCategory(newProduct.getCategory());
                     product.setCollection(newProduct.getCollection());
                     product.setDescription(newProduct.getDescription());

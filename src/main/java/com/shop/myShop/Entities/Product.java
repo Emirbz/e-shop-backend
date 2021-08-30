@@ -13,24 +13,32 @@ public class Product {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     private String name;
+
     private String description;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Size> sizes;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     private Category category;
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private SubCategory subCategory;
+
     @Enumerated(EnumType.STRING)
     private Collection collection;
+
     private Double price;
+
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Picture> pictures;
@@ -152,15 +160,6 @@ public class Product {
 
     public void setNewPrice(Double newPrice) {
         this.newPrice = newPrice;
-    }
-
-
-    public SubCategory getSubCategory() {
-        return subCategory;
-    }
-
-    public void setSubCategory(SubCategory subCategory) {
-        this.subCategory = subCategory;
     }
 
 }

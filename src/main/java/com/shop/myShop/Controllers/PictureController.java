@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,13 +25,15 @@ public class PictureController {
     FilesStorageService storageService;
 
 
-    @PostMapping("/upload/{productId}")
-    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long productId) {
+    @PostMapping("/upload")
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         String message = "";
         try {
             String fileName = storageService.save(file);
-            Resource uploadedFile = storageService.load(fileName);
-            return ResponseEntity.status(HttpStatus.OK).body(storageService.saveToDB(uploadedFile, productId));
+//            Resource uploadedFile = storageService.load(fileName);
+            HashMap<String, String> response = new HashMap<>();
+            response.put("fileName", fileName);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "!";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
