@@ -1,6 +1,8 @@
 package com.shop.myShop.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,12 +14,16 @@ public class Category {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     private String name;
+
     @JsonIgnore
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Product> products;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToOne(mappedBy = "category", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Picture picture;
 
     public Category() {
@@ -61,6 +67,14 @@ public class Category {
     public void addProduct(Product product) {
         getProducts().add(product);
 //        product.setCategory(this);
+    }
+
+    public Picture getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Picture picture) {
+        this.picture = picture;
     }
 
     public void removeProduct(Long productId) {

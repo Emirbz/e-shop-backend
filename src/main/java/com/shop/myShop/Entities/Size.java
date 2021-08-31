@@ -17,9 +17,19 @@ public class Size {
     private Integer quantity;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
 
+
+    public Size(){
+
+    }
+    public Size(String filename, Long productId, Integer quantity) {
+        this.name = filename;
+        this.quantity = quantity;
+        this.product = new Product();
+        this.product.setId(productId);
+    }
 
     public Long getId() {
         return id;

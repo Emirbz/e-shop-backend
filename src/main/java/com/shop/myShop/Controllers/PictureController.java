@@ -27,15 +27,15 @@ public class PictureController {
 
     @PostMapping("/upload")
     public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
-        String message = "";
+        HashMap<String, String> response = new HashMap<>();
         try {
             String fileName = storageService.save(file);
 //            Resource uploadedFile = storageService.load(fileName);
-            HashMap<String, String> response = new HashMap<>();
             response.put("fileName", fileName);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            String message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            response.put("error", message);
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
     }
