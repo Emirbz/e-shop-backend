@@ -10,15 +10,23 @@ public class Picture {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     private String name;
+
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
+
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    private Category category;
+
+    @Transient
     private String url;
 
     public Picture(String filename, Long productId) {
         this.name = filename;
-        this.url = "http://localhost/e-shop-backend/uploads/" + filename;
+//        this.url = "http://localhost/e-shop-backend/uploads/" + filename;
         this.product = new Product();
         this.product.setId(productId);
     }
@@ -29,6 +37,8 @@ public class Picture {
     }
 
     public String getUrl() {
+        if (this.name != null)
+            return "http://localhost/e-shop-backend/uploads/" + this.name;
         return url;
     }
 
@@ -37,7 +47,7 @@ public class Picture {
     }
 
     public Picture() {
-        super();
+
     }
 
 
@@ -62,6 +72,18 @@ public class Picture {
     }
 
     public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void addProduct(Product product){
         this.product = product;
     }
 }

@@ -2,11 +2,7 @@ package com.shop.myShop.Controllers;
 
 import com.shop.myShop.Entities.Category;
 import com.shop.myShop.Entities.Product;
-import com.shop.myShop.Entities.Size;
-import com.shop.myShop.Repositories.CategoryRepository;
-import com.shop.myShop.Repositories.ProductRepository;
-import com.shop.myShop.Repositories.SaleRepository;
-import com.shop.myShop.Repositories.SizeRepository;
+import com.shop.myShop.Repositories.*;
 import net.kaczmarzyk.spring.data.jpa.domain.Between;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
@@ -18,10 +14,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Date;
-
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping("products")
@@ -31,22 +23,33 @@ public class ProductController {
     private final CategoryRepository categoryRepository;
     private final SaleRepository saleRepository;
     private final SizeRepository sizeRepository;
+    private final PictureRepository pictureRepository;
 
-    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository, SaleRepository saleRepository, SizeRepository sizeRepository) {
+    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository, SaleRepository saleRepository, SizeRepository sizeRepository, PictureRepository pictureRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.saleRepository = saleRepository;
         this.sizeRepository = sizeRepository;
+        this.pictureRepository = pictureRepository;
     }
 
     @PostMapping
     ResponseEntity addProduct(@RequestBody Product product) {
-        Product p = productRepository.save(product);
-        for (Size size : product.getSizes()) {
-            size.setProduct(p);
-            sizeRepository.save(size);
-        }
-        return ResponseEntity.ok(p);
+        Product pr = productRepository.save(product);
+        pr.setSizes(product.getSizes());
+        pr.setPictures(product.getPictures());
+        product.getPictures().forEach(picture -> picture.setProduct(pr));
+        product.getSizes().forEach(size -> size.setProduct(pr));
+        productRepository.flush();
+       /* product.getPictures().forEach(picture -> {
+            Picture p = new Picture(picture.getName(), pr.getId());
+            pictureRepository.save(p);
+        });
+        product.getSizes().forEach(size -> {
+            Size s = new Size(size.getName(), pr.getId(), size.getQuantity());
+            sizeRepository.save(s);
+        });*/
+        return ResponseEntity.ok(pr);
     }
 
     @GetMapping("/{id}")
@@ -63,22 +66,22 @@ public class ProductController {
         Product p = productRepository.findById(id)
                 .map(product -> {
                     product.setName(newProduct.getName());
-                    product.setSubCategory(newProduct.getSubCategory());
                     product.setCategory(newProduct.getCategory());
                     product.setCollection(newProduct.getCollection());
                     product.setDescription(newProduct.getDescription());
                     product.setGender(newProduct.getGender());
                     product.setPrice(newProduct.getPrice());
                     product.setSizes(newProduct.getSizes());
-                    product.setStatus(newProduct.getStatus());
-                    product.setSizes(newProduct.getSizes());
                     product.setPictures(newProduct.getPictures());
+                    product.setStatus(newProduct.getStatus());
                     return productRepository.save(product);
                 }).orElse(null);
-        if (p != null)
+        if (p != null) {
+            newProduct.getPictures().forEach(picture -> picture.setProduct(p));
+            newProduct.getSizes().forEach(size -> size.setProduct(p));
+            productRepository.flush();
             return ResponseEntity.ok(p);
-
-        else
+        } else
             return ResponseEntity.badRequest().body("Product not found");
     }
 
@@ -89,7 +92,7 @@ public class ProductController {
             productRepository.deleteById(id);
             return ResponseEntity.ok().build();
         } else
-            return ResponseEntity.badRequest().body("User not found");
+            return ResponseEntity.badRequest().body("Product not found");
     }
 
 
@@ -115,14 +118,14 @@ public class ProductController {
             @Spec(path = "price", params = {"minPrice", "maxPrice"}, spec = Between.class),
     }) Specification<Product> productSpecification, Pageable pageable) {
         Page<Product> p = productRepository.findAll(productSpecification, pageable);
-        for (Product product : p) {
+      /*  for (Product product : p) {
             Integer percentage = saleRepository.isProductOnSale(new Date(), product.getId());
             if (percentage != null) {
                 double newPrice = product.getPrice() - (product.getPrice() * percentage / 100);
                 BigDecimal bd = new BigDecimal(newPrice).setScale(2, RoundingMode.HALF_UP);
                 product.setNewPrice(bd.doubleValue());
             }
-        }
+        }*/
         return ResponseEntity.ok(p);
     }
 }

@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Product {
@@ -13,27 +14,35 @@ public class Product {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     private String name;
+
     private String description;
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Size> sizes;
+    private Set<Size> sizes;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    @ManyToOne(cascade = CascadeType.MERGE)
+
+    @ManyToOne
     private Category category;
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private SubCategory subCategory;
+
     @Enumerated(EnumType.STRING)
     private Collection collection;
+
     private Double price;
+
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Picture> pictures;
+    private Set<Picture> pictures;
 
     @Transient
     private Double newPrice;
@@ -43,7 +52,7 @@ public class Product {
     }
 
 
-    public Product(String name, String description, List<Size> sizes, Gender gender, Collection collection, Category category, Double price, ProductStatus status, List<Picture> pictures) {
+    public Product(String name, String description, Set<Size> sizes, Gender gender, Collection collection, Category category, Double price, ProductStatus status, Set<Picture> pictures) {
         this.name = name;
         this.description = description;
         this.sizes = sizes;
@@ -82,11 +91,11 @@ public class Product {
     }
 
 
-    public List<Size> getSizes() {
+    public Set<Size> getSizes() {
         return sizes;
     }
 
-    public void setSizes(List<Size> sizes) {
+    public void setSizes(Set<Size> sizes) {
         this.sizes = sizes;
     }
 
@@ -142,25 +151,16 @@ public class Product {
         return newPrice;
     }
 
-    public List<Picture> getPictures() {
+    public Set<Picture> getPictures() {
         return pictures;
     }
 
-    public void setPictures(List<Picture> pictures) {
+    public void setPictures(Set<Picture> pictures) {
         this.pictures = pictures;
     }
 
     public void setNewPrice(Double newPrice) {
         this.newPrice = newPrice;
-    }
-
-
-    public SubCategory getSubCategory() {
-        return subCategory;
-    }
-
-    public void setSubCategory(SubCategory subCategory) {
-        this.subCategory = subCategory;
     }
 
 }
