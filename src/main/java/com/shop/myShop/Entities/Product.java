@@ -1,12 +1,11 @@
 package com.shop.myShop.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Product {
@@ -19,9 +18,9 @@ public class Product {
 
     private String description;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<Size> sizes;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<ProductSize> sizes = new HashSet<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
@@ -29,8 +28,9 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @ManyToOne
-    private Category category;
+    @ManyToMany()
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Category> categories = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private Collection collection;
@@ -52,13 +52,13 @@ public class Product {
     }
 
 
-    public Product(String name, String description, Set<Size> sizes, Gender gender, Collection collection, Category category, Double price, ProductStatus status, Set<Picture> pictures) {
+    public Product(String name, String description, Set<ProductSize> sizes, Gender gender, Collection collection, Set<Category> categories, Double price, ProductStatus status, Set<Picture> pictures) {
         this.name = name;
         this.description = description;
         this.sizes = sizes;
         this.gender = gender;
         this.collection = collection;
-        this.category = category;
+        this.categories = categories;
         this.price = price;
         this.status = status;
         this.pictures = pictures;
@@ -90,12 +90,11 @@ public class Product {
         this.description = description;
     }
 
-
-    public Set<Size> getSizes() {
+    public Set<ProductSize> getSizes() {
         return sizes;
     }
 
-    public void setSizes(Set<Size> sizes) {
+    public void setSizes(Set<ProductSize> sizes) {
         this.sizes = sizes;
     }
 
@@ -123,12 +122,12 @@ public class Product {
         this.collection = collection;
     }
 
-    public Category getCategory() {
-        return category;
+    public Set<Category> getCategories() {
+        return categories;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     public Double getPrice() {
@@ -163,4 +162,40 @@ public class Product {
         this.newPrice = newPrice;
     }
 
+    public void addSize(Size size, int quantity) {
+        ProductSize postSize = new ProductSize(this, size, quantity);
+        sizes.add(postSize);
+        size.getProducts().add(postSize);
+    }
+
+    public void removeSize(Size size) {
+        for (Iterator<ProductSize> iterator = sizes.iterator();
+             iterator.hasNext(); ) {
+            ProductSize productSize = iterator.next();
+
+            if (productSize.getProduct().equals(this) &&
+                    productSize.getSize().equals(size)) {
+                iterator.remove();
+                productSize.getProduct().getSizes().remove(productSize);
+                productSize.setProduct(null);
+                productSize.setSize(null);
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Product post = (Product) o;
+        return Objects.equals(name, post.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }
