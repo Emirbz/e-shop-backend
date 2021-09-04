@@ -41,7 +41,9 @@ public class CategoryController {
                 .map(product -> {
                     product.setName(newCategory.getName());
                     product.setPicture(newCategory.getPicture());
+                    newCategory.getPicture().setCategory(product);
                     return categoryRepository.save(product);
+
                 }).get();
         return ResponseEntity.ok(c);
     }
@@ -51,7 +53,7 @@ public class CategoryController {
         Category c = categoryRepository.findById(id).orElse(null);
         if (c != null) {
             categoryRepository.deleteById(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(c);
         } else
             return ResponseEntity.badRequest().body("Category not found");
     }
