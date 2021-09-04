@@ -1,9 +1,12 @@
 package com.shop.myShop.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Size {
@@ -14,21 +17,17 @@ public class Size {
 
     private String name;
 
-    private Integer quantity;
-
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Product product;
+    @OneToMany(mappedBy = "size", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private Set<ProductSize> products = new HashSet<>();
 
 
-    public Size(){
+    public Size() {
 
     }
-    public Size(String filename, Long productId, Integer quantity) {
+
+    public Size(String filename, Long productId) {
         this.name = filename;
-        this.quantity = quantity;
-        this.product = new Product();
-        this.product.setId(productId);
     }
 
     public Long getId() {
@@ -47,19 +46,12 @@ public class Size {
         this.name = name;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Set<ProductSize> getProducts() {
+        return products;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setProducts(Set<ProductSize> products) {
+        this.products = products;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 }

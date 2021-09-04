@@ -18,7 +18,7 @@ public class Category {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "categories")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Product> products;
 
