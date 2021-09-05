@@ -12,4 +12,7 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
 
     @Query("select p from Picture p where p.product.id = ?1")
     List<Picture> getPicturesByProduct(Long id);
+
+    @Query("select p from Picture p where p.category.id = ?1")
+    Picture getPicturesByCategory(Long id);
 }

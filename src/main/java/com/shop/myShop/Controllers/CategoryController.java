@@ -1,6 +1,7 @@
 package com.shop.myShop.Controllers;
 
 import com.shop.myShop.Entities.Category;
+import com.shop.myShop.Entities.Picture;
 import com.shop.myShop.Repositories.CategoryRepository;
 import com.shop.myShop.Repositories.PictureRepository;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +41,8 @@ public class CategoryController {
         Category c = categoryRepository.findById(id)
                 .map(product -> {
                     product.setName(newCategory.getName());
-                    product.setPicture(newCategory.getPicture());
-                    newCategory.getPicture().setCategory(product);
+                    Picture picture = pictureRepository.getPicturesByCategory(product.getId());
+                    picture.setName(newCategory.getPicture().getName());
                     return categoryRepository.save(product);
 
                 }).get();
