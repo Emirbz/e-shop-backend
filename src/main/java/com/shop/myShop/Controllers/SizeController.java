@@ -40,11 +40,11 @@ public class SizeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSize(@PathVariable Long id) {
+    public ResponseEntity deleteSize(@PathVariable Long id) {
         Size p = sizeRepository.findById(id).orElse(null);
         if (p != null) {
             sizeRepository.deleteById(id);
-            return ResponseEntity.ok("Size deleted");
+            return ResponseEntity.ok(p);
         } else
             return ResponseEntity.badRequest().body("Size not found");
     }
