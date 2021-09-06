@@ -42,8 +42,19 @@ public class ProductController {
     @PostMapping
     public ResponseEntity addProduct(@RequestBody Product product) {
         Product dto = new Product();
-        updateProduct(dto, product.getName(), product.getDescription(), product.getPrice(), product.getStatus(), product.getCollection(), product.getGender(), product.getSizes(), product.getCategories());
+        updateProduct(dto, product.getName(), product.getDescription(), product.getPrice(), product.getStatus(), product.getCollection(), product.getGender(), product.getCategories());
+        product.getSizes().forEach(productSize -> {
+            sizeRepository.findById(productSize.getSize().getId()).ifPresent(size -> dto.addSize(size, productSize.getQuantity()));
+        });
         Product p = productRepository.save(dto);
+        product.getPictures().forEach(picture ->
+                {
+                    Picture pic = new Picture();
+                    pic.setName(picture.getName());
+                    pic.setProduct(p);
+                    pictureRepository.save(pic);
+                }
+        );
         return ResponseEntity.ok(p);
     }
 
@@ -61,26 +72,34 @@ public class ProductController {
         Product p = productRepository.findById(id)
                 .map(product -> {
                     updateProduct(product, newProduct.getName(), newProduct.getDescription(), newProduct.getPrice(),
-                            newProduct.getStatus(), newProduct.getCollection(), newProduct.getGender(),
-                            newProduct.getSizes(), newProduct.getCategories());
-                    return productRepository.save(product);
+                            newProduct.getStatus(), newProduct.getCollection(), newProduct.getGender(), newProduct.getCategories());
+                    return productRepository.saveAndFlush(product);
                 }).orElse(null);
         if (p != null) {
+            p.getSizes().clear();
+            newProduct.getSizes().forEach(productSize -> {
+                sizeRepository.findById(productSize.getSize().getId()).ifPresent(size -> p.addSize(size, productSize.getQuantity()));
+            });
+            List<Picture> pictures = pictureRepository.getPicturesByProduct(p.getId());
+            pictureRepository.deletePicturesByProduct(p.getId());
+            pictures.forEach(picture -> {
+                Picture pic = new Picture();
+                pic.setName(picture.getName());
+                pic.setProduct(p);
+                pictureRepository.save(pic);
+            });
             return ResponseEntity.ok(p);
         } else
             return ResponseEntity.badRequest().body("Product not found");
     }
 
-    private void updateProduct(Product product, String name, String description, Double price, ProductStatus status, Collection collection, Gender gender, Set<ProductSize> sizes, Set<Category> categories) {
+    private void updateProduct(Product product, String name, String description, Double price, ProductStatus status, Collection collection, Gender gender, Set<Category> categories) {
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
         product.setStatus(status);
         product.setCollection(collection);
         product.setGender(gender);
-        sizes.forEach(productSize -> {
-            sizeRepository.findById(productSize.getSize().getId()).ifPresent(size -> product.addSize(size, productSize.getQuantity()));
-        });
         product.getCategories().addAll(categories);
     }
 

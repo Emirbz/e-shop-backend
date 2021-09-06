@@ -19,6 +19,7 @@ public class Product {
     private String description;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonManagedReference
     private Set<ProductSize> sizes = new HashSet<>();
 
@@ -164,8 +165,10 @@ public class Product {
 
     public void addSize(Size size, int quantity) {
         ProductSize postSize = new ProductSize(this, size, quantity);
-        sizes.add(postSize);
-        size.getProducts().add(postSize);
+        if (!sizes.contains(postSize)) {
+            sizes.add(postSize);
+            size.getProducts().add(postSize);
+        }
     }
 
     public void removeSize(Size size) {
