@@ -12,7 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface SizeRepository extends JpaRepository<Size, Long> {
+public interface ProductSizeRepository extends JpaRepository<ProductSize, Long> {
+
+
+    @Query("select ps from ProductSize ps where  ps.product.id = ?1")
+    List<ProductSize> getProductSizesByProduct(Long id);
 
 //    @Query("select p from Size p where p.product.id = ?1")
 //    List<Size> getSizesByProduct(Long id);

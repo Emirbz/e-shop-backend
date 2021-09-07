@@ -1,5 +1,7 @@
 package com.shop.myShop.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -17,6 +19,7 @@ public class Sale {
     private Date endDate;
 
     @OneToOne
+    @JsonBackReference
     private Product product;
 
     private Integer percentage;
