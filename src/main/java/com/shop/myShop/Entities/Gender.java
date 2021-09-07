@@ -1,8 +1,8 @@
 package com.shop.myShop.Entities;
 
 public enum Gender {
-    Men,
-    Women,
+    Homme,
+    Femme,
     Unisex,
-    Children
+    Enfant
 }

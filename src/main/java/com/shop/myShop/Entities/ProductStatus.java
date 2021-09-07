@@ -1,12 +1,16 @@
 package com.shop.myShop.Entities;
 
 public enum ProductStatus {
-    Available("Available"), Sold_Out("Sold out");
+    Disponible("Disponible"), En_repture_de_stock("En repture de stock");
 
     private String status;
 
     ProductStatus(String status) {
         this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     @Override

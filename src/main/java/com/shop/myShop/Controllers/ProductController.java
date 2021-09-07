@@ -1,7 +1,7 @@
 package com.shop.myShop.Controllers;
 
-import com.shop.myShop.Entities.*;
 import com.shop.myShop.Entities.Collection;
+import com.shop.myShop.Entities.*;
 import com.shop.myShop.Repositories.*;
 import net.kaczmarzyk.spring.data.jpa.domain.Between;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
@@ -44,7 +44,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity addProduct(@RequestBody Product product) {
         Product dto = new Product();
-        updateProduct(dto, product.getName(), product.getDescription(), product.getPrice(), product.getStatus(), product.getCollection(), product.getGender(), product.getCategories());
+        updateProduct(dto, product.getName(), product.getDescription(), product.getPrice(), product.getStatus(), product.getCollection(), product.getGender(), product.getCategories(), product.isDrop());
         product.getSizes().forEach(productSize -> {
             sizeRepository.findById(productSize.getSize().getId()).ifPresent(size -> dto.addSize(size, productSize.getQuantity()));
         });
@@ -77,8 +77,9 @@ public class ProductController {
         Map<String, String> error = new HashMap<>();
         Product p = productRepository.findById(id)
                 .map(product -> {
+                    product.getCategories().clear();
                     updateProduct(product, newProduct.getName(), newProduct.getDescription(), newProduct.getPrice(),
-                            newProduct.getStatus(), newProduct.getCollection(), newProduct.getGender(), newProduct.getCategories());
+                            newProduct.getStatus(), newProduct.getCollection(), newProduct.getGender(), newProduct.getCategories(), newProduct.isDrop());
                     return productRepository.saveAndFlush(product);
                 }).orElse(null);
         if (p != null) {
@@ -101,7 +102,7 @@ public class ProductController {
         }
     }
 
-    private void updateProduct(Product product, String name, String description, Double price, ProductStatus status, Collection collection, Gender gender, Set<Category> categories) {
+    private void updateProduct(Product product, String name, String description, Double price, String status, Collection collection, Gender gender, Set<Category> categories, boolean isDrop) {
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
@@ -109,6 +110,7 @@ public class ProductController {
         product.setCollection(collection);
         product.setGender(gender);
         product.getCategories().addAll(categories);
+        product.setDrop(isDrop);
     }
 
     @DeleteMapping("/{id}")

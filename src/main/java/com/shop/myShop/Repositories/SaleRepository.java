@@ -11,5 +11,5 @@ import java.util.Date;
 public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     @Query("select s from Sale s where s.product.id = ?2 and s.endDate >= ?1 and s.startDate <= ?1")
-    Sale     isProductOnSale(Date now, Long id);
+    Sale isProductOnSale(Date now, Long id);
 }

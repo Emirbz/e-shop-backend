@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
+@Table(name = "product")
 public class Product {
 
     private @Id
@@ -38,8 +39,11 @@ public class Product {
 
     private Double price;
 
-    @Enumerated(EnumType.STRING)
-    private ProductStatus status;
+    private String status;
+
+    @Column(name = "is_drop")
+    private boolean drop = false;
+
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -54,7 +58,7 @@ public class Product {
     }
 
 
-    public Product(String name, String description, Set<ProductSize> sizes, Gender gender, Collection collection, Set<Category> categories, Double price, ProductStatus status, Set<Picture> pictures) {
+    public Product(String name, String description, Set<ProductSize> sizes, Gender gender, Collection collection, Set<Category> categories, Double price, String status, boolean drop, Set<Picture> pictures) {
         this.name = name;
         this.description = description;
         this.sizes = sizes;
@@ -63,6 +67,7 @@ public class Product {
         this.categories = categories;
         this.price = price;
         this.status = status;
+        this.drop = drop;
         this.pictures = pictures;
         this.dateAdded = new Date();
 //        category.addProduct(this);
@@ -82,6 +87,14 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isDrop() {
+        return drop;
+    }
+
+    public void setDrop(boolean drop) {
+        this.drop = drop;
     }
 
     public String getDescription() {
@@ -140,14 +153,6 @@ public class Product {
         this.price = price;
     }
 
-    public ProductStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ProductStatus status) {
-        this.status = status;
-    }
-
 
     public Set<Picture> getPictures() {
         return pictures;
@@ -202,5 +207,13 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
