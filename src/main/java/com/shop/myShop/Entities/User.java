@@ -1,9 +1,6 @@
 package com.shop.myShop.Entities;
 
-import org.springframework.validation.annotation.Validated;
-
 import javax.persistence.*;
-import javax.validation.Valid;
 
 @Entity
 public class User {
@@ -11,26 +8,26 @@ public class User {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    private String name;
+    private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private String address;
+    private String town;
+    private String postalCode;
     private String phone;
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+
 
     public User() {
     }
 
-    public User(String name, String lastName, String email, String password, String address, String phone, Gender gender) {
-        this.name = name;
+    public User(String name, String lastName, String email, String address, String town, String postalCode, String phone) {
+        this.firstName = name;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.address = address;
+        this.town = town;
+        this.postalCode = postalCode;
         this.phone = phone;
-        this.gender = gender;
     }
 
     public Long getId() {
@@ -41,12 +38,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -65,13 +62,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getAddress() {
         return address;
@@ -85,15 +75,24 @@ public class User {
         return phone;
     }
 
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
 }

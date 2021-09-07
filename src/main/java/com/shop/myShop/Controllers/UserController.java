@@ -7,6 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@RequestMapping("users")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -16,7 +18,7 @@ public class UserController {
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+/*
     @PostMapping("login")
     ResponseEntity login(@RequestBody User user) {
         User u = userRepository.findUserByEmail(user.getEmail());
@@ -69,5 +71,5 @@ public class UserController {
 
         else
             return ResponseEntity.badRequest().body("User not found");
-    }
+    }*/
 }

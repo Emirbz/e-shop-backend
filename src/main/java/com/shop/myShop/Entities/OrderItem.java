@@ -3,17 +3,20 @@ package com.shop.myShop.Entities;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "order_items")
 public class OrderItem {
 
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    private Long quantity;
+
     @OneToOne
     private Product product;
 
-    @OneToOne
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
 
     public OrderItem() {
     }
@@ -34,11 +37,19 @@ public class OrderItem {
         this.product = product;
     }
 
-    public User getUser() {
-        return user;
+    public Long getQuantity() {
+        return quantity;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

@@ -57,5 +57,10 @@ public class SaleController {
         }
     }
 
+    @GetMapping
+    ResponseEntity getSales() {
+        return ResponseEntity.ok(saleRepository.findAll());
+    }
+
 
 }
