@@ -7,7 +7,9 @@ import com.shop.myShop.Repositories.PictureRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("categories")
@@ -37,7 +39,8 @@ public class CategoryController {
 
 
     @PutMapping("/{id}")
-    ResponseEntity<Category> updateCategory(@RequestBody Category newCategory, @PathVariable Long id) {
+    ResponseEntity updateCategory(@RequestBody Category newCategory, @PathVariable Long id) {
+        Map<String, String> error = new HashMap<>();
         Category c = categoryRepository.findById(id)
                 .map(product -> {
                     product.setName(newCategory.getName());
@@ -45,17 +48,25 @@ public class CategoryController {
                     picture.setName(newCategory.getPicture().getName());
                     return categoryRepository.save(product);
 
-                }).get();
-        return ResponseEntity.ok(c);
+                }).orElse(null);
+        if (c != null)
+            return ResponseEntity.ok(c);
+        else {
+            error.put("error", "Category not found");
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity deleteCategory(@PathVariable Long id) {
+        Map<String, String> error = new HashMap<>();
         Category c = categoryRepository.findById(id).orElse(null);
         if (c != null) {
             categoryRepository.deleteById(id);
             return ResponseEntity.ok(c);
-        } else
-            return ResponseEntity.badRequest().body("Category not found");
+        } else {
+            error.put("error", "Category not found");
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 }

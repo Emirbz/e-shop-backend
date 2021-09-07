@@ -19,6 +19,7 @@ public class Product {
     private String description;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonManagedReference
     private Set<ProductSize> sizes = new HashSet<>();
 
@@ -45,7 +46,8 @@ public class Product {
     private Set<Picture> pictures;
 
     @Transient
-    private Double newPrice;
+    @JsonManagedReference
+    private Sale sale;
 
     public Product() {
         this.dateAdded = new Date();
@@ -146,9 +148,6 @@ public class Product {
         this.status = status;
     }
 
-    public Double getNewPrice() {
-        return newPrice;
-    }
 
     public Set<Picture> getPictures() {
         return pictures;
@@ -158,14 +157,20 @@ public class Product {
         this.pictures = pictures;
     }
 
-    public void setNewPrice(Double newPrice) {
-        this.newPrice = newPrice;
+    public Sale getSale() {
+        return sale;
+    }
+
+    public void setSale(Sale sale) {
+        this.sale = sale;
     }
 
     public void addSize(Size size, int quantity) {
         ProductSize postSize = new ProductSize(this, size, quantity);
-        sizes.add(postSize);
-        size.getProducts().add(postSize);
+        if (!sizes.contains(postSize)) {
+            sizes.add(postSize);
+            size.getProducts().add(postSize);
+        }
     }
 
     public void removeSize(Size size) {

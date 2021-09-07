@@ -17,7 +17,7 @@ public class Size {
 
     private String name;
 
-    @OneToMany(mappedBy = "size", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "size", cascade = CascadeType.MERGE, orphanRemoval = true)
     @JsonBackReference
     private Set<ProductSize> products = new HashSet<>();
 

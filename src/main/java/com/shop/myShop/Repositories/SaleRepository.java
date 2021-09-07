@@ -10,6 +10,6 @@ import java.util.Date;
 @Repository
 public interface SaleRepository extends JpaRepository<Sale, Long> {
 
-    @Query("select s.percentage from Sale s where s.product.id = ?2 and s.endDate > ?1")
-    Integer isProductOnSale(Date now, Long id);
+    @Query("select s from Sale s where s.product.id = ?2 and s.endDate >= ?1 and s.startDate <= ?1")
+    Sale     isProductOnSale(Date now, Long id);
 }
