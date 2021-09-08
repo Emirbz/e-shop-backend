@@ -1,5 +1,7 @@
 package com.shop.myShop.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,6 +18,7 @@ public class OrderItem {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Order order;
 
     public OrderItem() {
