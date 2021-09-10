@@ -17,6 +17,9 @@ public class OrderItem {
     @OneToOne
     private Product product;
 
+    @OneToOne
+    private Size size;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private Order order;
@@ -54,5 +57,13 @@ public class OrderItem {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
     }
 }
