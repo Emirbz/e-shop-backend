@@ -6,7 +6,7 @@ import com.shop.myShop.Repositories.*;
 import net.kaczmarzyk.spring.data.jpa.domain.Between;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.In;
-import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.JoinFetch;
@@ -126,7 +126,6 @@ public class ProductController {
         }
     }
 
-
     @GetMapping("/{id}/categories")
     ResponseEntity getProductsByCategory(@PathVariable Long id, @RequestBody List<Category> categories, Pageable pageable) {
         Map<String, String> error = new HashMap<>();
@@ -141,17 +140,17 @@ public class ProductController {
         }
     }
 
-    @GetMapping
+    @GetMapping(params = "cate")
     ResponseEntity getAllProducts(
-            @Join(path = "categories", alias = "cat")
-            @JoinFetch(paths = "sizes", alias = "ps")
+            @Join(path = "categories", alias = "c")
+            @Join(path = "sizes", alias = "s")
             @And({
-                    @Spec(path = "name", spec = Like.class),
+                    @Spec(path = "name", spec = LikeIgnoreCase.class),
                     @Spec(path = "size", spec = Equal.class),
                     @Spec(path = "gender", spec = Equal.class),
                     @Spec(path = "collection", spec = Equal.class),
-                    @Spec(path = "cat", spec = Equal.class),
-                    @Spec(path = "ps", params = "size", spec = In.class),
+                    @Spec(path = "c.id", params = "cate", paramSeparator = ',', spec = In.class),
+                    @Spec(path = "s", paramSeparator = ',', spec = In.class),
                     @Spec(path = "price", params = {"minPrice", "maxPrice"}, spec = Between.class)
             }) Specification<Product> productSpecification, Pageable pageable) {
         Page<Product> p = productRepository.findAll(productSpecification, pageable);

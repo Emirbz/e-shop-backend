@@ -57,7 +57,6 @@ public class Product {
         this.dateAdded = new Date();
     }
 
-
     public Product(String name, String description, Set<ProductSize> sizes, Gender gender, Collection collection, Set<Category> categories, Double price, String status, boolean drop, Set<Picture> pictures) {
         this.name = name;
         this.description = description;

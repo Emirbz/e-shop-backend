@@ -63,4 +63,16 @@ public class SaleController {
     }
 
 
+    @DeleteMapping("/{id}")
+    ResponseEntity deleteSale(@PathVariable Long id) {
+        Map<String, String> error = new HashMap<>();
+        Sale sale = saleRepository.findById(id).orElse(null);
+        if (sale != null) {
+            saleRepository.delete(sale);
+            return ResponseEntity.ok().build();
+        } else {
+            error.put("error", "Sale not found");
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
 }

@@ -24,7 +24,6 @@ public class Sale {
 
     private Integer percentage;
 
-
     public Sale() {
     }
 
