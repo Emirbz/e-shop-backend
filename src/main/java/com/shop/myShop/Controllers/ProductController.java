@@ -3,13 +3,9 @@ package com.shop.myShop.Controllers;
 import com.shop.myShop.Entities.Collection;
 import com.shop.myShop.Entities.*;
 import com.shop.myShop.Repositories.*;
-import net.kaczmarzyk.spring.data.jpa.domain.Between;
-import net.kaczmarzyk.spring.data.jpa.domain.Equal;
-import net.kaczmarzyk.spring.data.jpa.domain.In;
-import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.domain.*;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.JoinFetch;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -119,19 +115,19 @@ public class ProductController {
         Product p = productRepository.findById(id).orElse(null);
         if (p != null) {
             productRepository.deleteById(id);
-            return ResponseEntity.ok(p);
+            return ResponseEntity.ok(new HashMap<>());
         } else {
             error.put("error", "Product not found");
             return ResponseEntity.badRequest().body(error);
         }
     }
 
-    @GetMapping("/{id}/categories")
-    ResponseEntity getProductsByCategory(@PathVariable Long id, @RequestBody List<Category> categories, Pageable pageable) {
+    @GetMapping("/category/{id}")
+    ResponseEntity getProductsByCategory(@PathVariable Long id, Pageable pageable) {
         Map<String, String> error = new HashMap<>();
         Category c = categoryRepository.findById(id).orElse(null);
         if (c != null) {
-            Page<Product> p = productRepository.getProductsByCategory(categories, pageable);
+            Page<Product> p = productRepository.getProductsByCategory(c, pageable);
             return ResponseEntity.ok(p);
         }
         {
@@ -140,17 +136,15 @@ public class ProductController {
         }
     }
 
-    @GetMapping(params = "cate")
+    @GetMapping
     ResponseEntity getAllProducts(
-            @Join(path = "categories", alias = "c")
-            @Join(path = "sizes", alias = "s")
+            @Join(path = "sizes", alias = "ps")
+            @Join(path = "ps.size", alias = "s")
             @And({
                     @Spec(path = "name", spec = LikeIgnoreCase.class),
-                    @Spec(path = "size", spec = Equal.class),
                     @Spec(path = "gender", spec = Equal.class),
-                    @Spec(path = "collection", spec = Equal.class),
-                    @Spec(path = "c.id", params = "cate", paramSeparator = ',', spec = In.class),
-                    @Spec(path = "s", paramSeparator = ',', spec = In.class),
+                    @Spec(path = "collection", spec = EqualIgnoreCase.class),
+                    @Spec(path = "s.id", params = "ss", paramSeparator = ',', spec = In.class),
                     @Spec(path = "price", params = {"minPrice", "maxPrice"}, spec = Between.class)
             }) Specification<Product> productSpecification, Pageable pageable) {
         Page<Product> p = productRepository.findAll(productSpecification, pageable);
@@ -162,4 +156,5 @@ public class ProductController {
         }
         return ResponseEntity.ok(p);
     }
+
 }

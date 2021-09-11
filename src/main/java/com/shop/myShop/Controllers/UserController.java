@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Objects;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping("users")
@@ -17,6 +20,13 @@ public class UserController {
 
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+
+    @GetMapping("/{phone}")
+    ResponseEntity getOrdersByPhoneNumber(@PathVariable String phone) {
+        User user = userRepository.getUserByPhone(phone);
+        return ResponseEntity.ok(Objects.requireNonNullElseGet(user, HashMap::new));
     }
 /*
     @PostMapping("login")
