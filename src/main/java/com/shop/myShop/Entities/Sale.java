@@ -12,10 +12,10 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date startDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date endDate;
 
     @OneToOne

@@ -24,7 +24,7 @@ public class Product {
     @JsonManagedReference
     private Set<ProductSize> sizes = new HashSet<>();
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateAdded;
 
     @Enumerated(EnumType.STRING)

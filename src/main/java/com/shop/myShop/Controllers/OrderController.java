@@ -57,7 +57,7 @@ public class OrderController {
         return ResponseEntity.ok(persisted);
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     ResponseEntity getOrders() {
         return ResponseEntity.ok(orderRepository.findAll());
     }
@@ -74,5 +74,23 @@ public class OrderController {
             error.put("error", "Order not found");
             return ResponseEntity.badRequest().body(error);
         }
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity deleteOrder(@PathVariable Long id) {
+        Map<String, String> error = new HashMap<>();
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            orderRepository.delete(order);
+            return ResponseEntity.ok(order);
+        } else {
+            error.put("error", "Order not found");
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @GetMapping("/{phone}")
+    ResponseEntity getOrdersByPhoneNumber(@PathVariable String phone) {
+        return ResponseEntity.ok(orderRepository.getOrdersByPhoneNumber(phone));
     }
 }

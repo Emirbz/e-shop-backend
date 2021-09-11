@@ -1,6 +1,7 @@
 package com.shop.myShop.Entities;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,9 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private Set<OrderItem> orderItems = new HashSet<>();
+
+    @Temporal(TemporalType.DATE)
+    private Date createdOn = new Date();
 
     public Long getId() {
         return id;
