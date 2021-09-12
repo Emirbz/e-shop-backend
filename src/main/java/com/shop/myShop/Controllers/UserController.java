@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -23,6 +24,21 @@ public class UserController {
     }
 
 
+    @GetMapping("/{phone}")
+    ResponseEntity getOrdersByPhoneNumber(@PathVariable String phone) {
+        Map<String, String> error = new HashMap<>();
+
+        User user = userRepository.getUserByPhone(phone);
+        if (user != null){
+
+            return ResponseEntity.ok(user);
+        }
+
+        error.put("error", "user not found");
+        return ResponseEntity.badRequest().body(error);
+
+
+    }
 /*
     @PostMapping("login")
     ResponseEntity login(@RequestBody User user) {

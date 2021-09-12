@@ -123,6 +123,7 @@ public class ProductController {
         } else {
             error.put("error", "Product not found");
             return ResponseEntity.badRequest().body(error);
+
         }
     }
 
@@ -134,7 +135,7 @@ public class ProductController {
             Page<Product> p = productRepository.getProductsByCategory(c, pageable);
             return ResponseEntity.ok(p);
         }
-        {
+
             error.put("error", "Category not found");
             return ResponseEntity.badRequest().body(error);
         }
