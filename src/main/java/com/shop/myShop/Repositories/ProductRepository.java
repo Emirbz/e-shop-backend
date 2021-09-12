@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-    @Query("select p from Product p where p.categories in ?1 order by p.dateAdded Desc")
+    @Query("select p from Product p join product_categories pc on p.id = pc.products_id.id where pc.categories_id in ?1 order by p.dateAdded Desc")
     Page<Product> getProductsByCategory(Category categories, Pageable pageable);
 }

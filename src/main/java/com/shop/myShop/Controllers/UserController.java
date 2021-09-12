@@ -23,11 +23,6 @@ public class UserController {
     }
 
 
-    @GetMapping("/{phone}")
-    ResponseEntity getOrdersByPhoneNumber(@PathVariable String phone) {
-        User user = userRepository.getUserByPhone(phone);
-        return ResponseEntity.ok(Objects.requireNonNullElseGet(user, HashMap::new));
-    }
 /*
     @PostMapping("login")
     ResponseEntity login(@RequestBody User user) {

@@ -1,5 +1,9 @@
 package com.shop.myShop.Entities;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,6 +26,7 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "order")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @Temporal(TemporalType.DATE)
