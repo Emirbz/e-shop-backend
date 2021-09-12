@@ -63,11 +63,11 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity updateOrderStatus(@PathVariable Long id, @RequestBody HashMap<String,String> status) {
+    ResponseEntity updateOrderStatus(@PathVariable Long id, @RequestBody String status) {
         Map<String, String> error = new HashMap<>();
         Order order = orderRepository.findById(id).orElse(null);
         if (order != null) {
-            order.setStatus(status.get("status"));
+            order.setStatus(status);
             orderRepository.save(order);
             return ResponseEntity.ok(order);
         } else {
