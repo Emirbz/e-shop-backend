@@ -57,7 +57,7 @@ public class SaleController {
         }
     }
 
-    @GetMapping("/admin")
+    @GetMapping
     ResponseEntity getSales() {
         return ResponseEntity.ok(saleRepository.findAll());
     }

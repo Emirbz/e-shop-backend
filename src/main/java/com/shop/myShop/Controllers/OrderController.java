@@ -57,17 +57,17 @@ public class OrderController {
         return ResponseEntity.ok(persisted);
     }
 
-    @GetMapping("/admin")
+    @GetMapping
     ResponseEntity getOrders() {
         return ResponseEntity.ok(orderRepository.findAll());
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity updateOrderStatus(@PathVariable Long id, @RequestBody String status) {
+    ResponseEntity updateOrderStatus(@PathVariable Long id, @RequestBody HashMap<String,String> status) {
         Map<String, String> error = new HashMap<>();
         Order order = orderRepository.findById(id).orElse(null);
         if (order != null) {
-            order.setStatus(status);
+            order.setStatus(status.get("status"));
             orderRepository.save(order);
             return ResponseEntity.ok(order);
         } else {
@@ -82,14 +82,14 @@ public class OrderController {
         Order order = orderRepository.findById(id).orElse(null);
         if (order != null) {
             orderRepository.delete(order);
-            return ResponseEntity.ok(order);
+            return ResponseEntity.ok(new HashMap<>());
         } else {
             error.put("error", "Order not found");
             return ResponseEntity.badRequest().body(error);
         }
     }
 
-    @GetMapping("/{phone}")
+    @GetMapping("/search/{phone}")
     ResponseEntity getOrdersByPhoneNumber(@PathVariable String phone) {
         return ResponseEntity.ok(orderRepository.getOrdersByPhoneNumber(phone));
     }
