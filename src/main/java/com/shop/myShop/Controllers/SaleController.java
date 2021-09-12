@@ -69,7 +69,7 @@ public class SaleController {
         Sale sale = saleRepository.findById(id).orElse(null);
         if (sale != null) {
             saleRepository.delete(sale);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(sale);
         } else {
             error.put("error", "Sale not found");
             return ResponseEntity.badRequest().body(error);
