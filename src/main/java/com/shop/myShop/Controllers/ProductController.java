@@ -126,7 +126,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/category/{id}")
+   /* @GetMapping("/category/{id}")
     ResponseEntity getProductsByCategory(@PathVariable Long id, Pageable pageable) {
         Map<String, String> error = new HashMap<>();
         Category c = categoryRepository.findById(id).orElse(null);
@@ -138,7 +138,7 @@ public class ProductController {
             error.put("error", "Category not found");
             return ResponseEntity.badRequest().body(error);
         }
-    }
+    }*/
 
     @GetMapping
     ResponseEntity getAllProducts(
