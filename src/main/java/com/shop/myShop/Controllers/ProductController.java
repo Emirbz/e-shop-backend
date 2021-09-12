@@ -60,9 +60,13 @@ public class ProductController {
     ResponseEntity getProduct(@PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
         Product p = productRepository.findById(id).orElse(null);
-        if (p != null)
+        if (p != null) {
+            Sale sale = saleRepository.isProductOnSale(new Date(), p.getId());
+            if (sale != null) {
+                p.setSale(sale);
+            }
             return ResponseEntity.ok(p);
-        else {
+        } else {
             error.put("error", "Product not found");
             return ResponseEntity.badRequest().body(error);
         }
@@ -122,7 +126,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/category/{id}")
+   /* @GetMapping("/category/{id}")
     ResponseEntity getProductsByCategory(@PathVariable Long id, Pageable pageable) {
         Map<String, String> error = new HashMap<>();
         Category c = categoryRepository.findById(id).orElse(null);
@@ -134,7 +138,7 @@ public class ProductController {
             error.put("error", "Category not found");
             return ResponseEntity.badRequest().body(error);
         }
-    }
+    }*/
 
     @GetMapping
     ResponseEntity getAllProducts(

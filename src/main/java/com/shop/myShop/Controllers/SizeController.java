@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
@@ -28,6 +30,7 @@ public class SizeController {
 
     @PutMapping("/{id}")
     public ResponseEntity replaceSize(@RequestBody Size newSize, @PathVariable Long id) {
+        Map<String, String> error = new HashMap<>();
         Size size = sizeRepository.findById(id)
                 .map(s -> {
                     s.setName(newSize.getName());
@@ -35,18 +38,23 @@ public class SizeController {
                 }).orElse(null);
         if (size != null) {
             return ResponseEntity.ok(size);
-        } else
-            return ResponseEntity.badRequest().body("Size not found");
+        } else {
+            error.put("error", "Size not found");
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteSize(@PathVariable Long id) {
+        Map<String, String> error = new HashMap<>();
         Size p = sizeRepository.findById(id).orElse(null);
         if (p != null) {
             sizeRepository.deleteById(id);
             return ResponseEntity.ok(p);
-        } else
-            return ResponseEntity.badRequest().body("Size not found");
+        }  else {
+            error.put("error", "Size not found");
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 
 }
