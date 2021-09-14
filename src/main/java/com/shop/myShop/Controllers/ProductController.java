@@ -7,6 +7,7 @@ import net.kaczmarzyk.spring.data.jpa.domain.*;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -64,6 +65,7 @@ public class ProductController {
             Sale sale = saleRepository.isProductOnSale(new Date(), p.getId());
             if (sale != null) {
                 p.setSale(sale);
+                sale.setProduct(null);
             }
             return ResponseEntity.ok(p);
         } else {
@@ -127,22 +129,9 @@ public class ProductController {
         }
     }
 
-   /* @GetMapping("/category/{id}")
-    ResponseEntity getProductsByCategory(@PathVariable Long id, Pageable pageable) {
-        Map<String, String> error = new HashMap<>();
-        Category c = categoryRepository.findById(id).orElse(null);
-        if (c != null) {
-            Page<Product> p = productRepository.getProductsByCategory(c, pageable);
-            return ResponseEntity.ok(p);
-        }
-
-            error.put("error", "Category not found");
-            return ResponseEntity.badRequest().body(error);
-        }
-    }*/
-
-    @GetMapping
-    ResponseEntity getAllProducts(
+    @GetMapping("/category/{id}")
+    ResponseEntity getProductsByCategory(
+            @PathVariable Long id,
             @Join(path = "sizes", alias = "ps")
             @Join(path = "ps.size", alias = "s")
             @And({
@@ -152,13 +141,38 @@ public class ProductController {
                     @Spec(path = "s.id", params = "ss", paramSeparator = ',', spec = In.class),
                     @Spec(path = "price", params = {"minPrice", "maxPrice"}, spec = Between.class)
             }) Specification<Product> productSpecification, Pageable pageable) {
-        Page<Product> p = productRepository.findAll(productSpecification, pageable);
-        for (Product product : p) {
+        Map<String, String> error = new HashMap<>();
+        if (id == 0) {
+            return ResponseEntity.ok(productRepository.findAll());
+        } else {
+            Category c = categoryRepository.findById(id).orElse(null);
+            if (c != null) {
+                Page<Product> p = productRepository.getProductsByCategory(c.getId(), pageable, productSpecification);
+                for (Product product : p) {
+                    Sale sale = saleRepository.isProductOnSale(new Date(), product.getId());
+                    if (sale != null) {
+                        product.setSale(sale);
+                        sale.setProduct(null);
+                    }
+                }
+                return ResponseEntity.ok(p);
+            }
+
+            error.put("error", "Category not found");
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @GetMapping
+    ResponseEntity getAllProducts(@RequestBody Product searchProduct, Pageable pageable) {
+        Page<Product> p = productRepository.findAll(Example.of(searchProduct), pageable);
+        /*for (Product product : p) {
             Sale sale = saleRepository.isProductOnSale(new Date(), product.getId());
             if (sale != null) {
                 product.setSale(sale);
+                sale.setProduct(null);
             }
-        }
+        }*/
         return ResponseEntity.ok(p);
     }
 

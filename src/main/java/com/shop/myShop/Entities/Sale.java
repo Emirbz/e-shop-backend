@@ -19,7 +19,6 @@ public class Sale {
     private Date endDate;
 
     @OneToOne
-    @JsonBackReference
     private Product product;
 
     private Integer percentage;
