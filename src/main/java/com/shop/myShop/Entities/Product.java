@@ -50,7 +50,6 @@ public class Product {
     private Set<Picture> pictures;
 
     @Transient
-    @JsonManagedReference
     private Sale sale;
 
     public Product() {
