@@ -147,7 +147,7 @@ public class ProductController {
             }) Specification<Product> productSpecification, Pageable pageable) {
         Map<String, String> error = new HashMap<>();
         if (id == 0) {
-            return ResponseEntity.ok(productRepository.findAll());
+            return ResponseEntity.ok(productRepository.findAll(pageable));
         } else {
             Category c = categoryRepository.findById(id).orElse(null);
             if (c != null) {
@@ -166,14 +166,15 @@ public class ProductController {
             return ResponseEntity.badRequest().body(error);
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    ResponseEntity getAllProducts(@RequestBody Product searchProduct, Pageable pageable) {
-        Page<Product> p = productRepository.findAll(Example.of(searchProduct), pageable);
+    ResponseEntity getAllProducts() {
+        List<Product> p = productRepository.findAll();
         /*for (Product product : p) {
             Sale sale = saleRepository.isProductOnSale(new Date(), product.getId());
             if (sale != null) {
                 product.setSale(sale);
+                sale.setProduct(null);
                 sale.setProduct(null);
             }
         }*/
