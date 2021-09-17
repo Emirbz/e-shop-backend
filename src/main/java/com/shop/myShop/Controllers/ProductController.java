@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -37,7 +38,7 @@ public class ProductController {
         this.pictureRepository = pictureRepository;
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity addProduct(@RequestBody Product product) {
         Product dto = new Product();
@@ -74,6 +75,7 @@ public class ProductController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     ResponseEntity replaceProduct(@RequestBody Product newProduct, @PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
@@ -115,6 +117,7 @@ public class ProductController {
         product.setDrop(isDrop);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     ResponseEntity deleteProduct(@PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
@@ -128,6 +131,7 @@ public class ProductController {
 
         }
     }
+
 
     @GetMapping("/category/{id}")
     ResponseEntity getProductsByCategory(

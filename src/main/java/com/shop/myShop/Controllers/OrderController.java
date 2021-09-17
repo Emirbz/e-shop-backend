@@ -4,6 +4,7 @@ import com.shop.myShop.Entities.*;
 import com.shop.myShop.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -57,11 +58,13 @@ public class OrderController {
         return ResponseEntity.ok(persisted);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     ResponseEntity getOrders() {
         return ResponseEntity.ok(orderRepository.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     ResponseEntity updateOrderStatus(@PathVariable Long id, @RequestBody String status) {
         Map<String, String> error = new HashMap<>();
@@ -76,6 +79,7 @@ public class OrderController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     ResponseEntity deleteOrder(@PathVariable Long id) {
         Map<String, String> error = new HashMap<>();

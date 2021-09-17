@@ -4,6 +4,7 @@ import com.shop.myShop.Entities.Size;
 import com.shop.myShop.Repositories.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class SizeController {
     @Autowired
     SizeRepository sizeRepository;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Size> addSize(@RequestBody Size size) {
         return ResponseEntity.ok(sizeRepository.save(size));
@@ -28,6 +30,7 @@ public class SizeController {
         return ResponseEntity.ok(sizeRepository.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity replaceSize(@RequestBody Size newSize, @PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
@@ -43,7 +46,7 @@ public class SizeController {
             return ResponseEntity.badRequest().body(error);
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteSize(@PathVariable Long id) {
         Map<String, String> error = new HashMap<>();

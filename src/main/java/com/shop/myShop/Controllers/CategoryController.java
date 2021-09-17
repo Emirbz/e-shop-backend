@@ -5,6 +5,7 @@ import com.shop.myShop.Entities.Picture;
 import com.shop.myShop.Repositories.CategoryRepository;
 import com.shop.myShop.Repositories.PictureRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryRepository.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     ResponseEntity<Category> addCategory(@RequestBody Category category) {
         category.getPicture().setCategory(category);
@@ -38,6 +40,7 @@ public class CategoryController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     ResponseEntity updateCategory(@RequestBody Category newCategory, @PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
@@ -57,6 +60,7 @@ public class CategoryController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     ResponseEntity deleteCategory(@PathVariable Long id) {
         Map<String, String> error = new HashMap<>();

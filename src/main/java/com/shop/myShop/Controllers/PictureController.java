@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -25,6 +26,7 @@ public class PictureController {
     FilesStorageService storageService;
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/upload")
     public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         HashMap<String, String> response = new HashMap<>();
@@ -39,7 +41,7 @@ public class PictureController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/files")
     public ResponseEntity<List<Picture>> getListFiles() {
         List<Picture> fileInfos = storageService.loadAll().map(path -> {
@@ -52,7 +54,7 @@ public class PictureController {
 
         return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
