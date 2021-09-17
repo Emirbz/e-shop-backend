@@ -15,5 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> getProductsByCategory(Long id, Pageable pageable, Specification<Product> specification);
 
     @Query("select count(p) from Product p join p.categories c where c.id = ?1 order by p.dateAdded Desc")
-    int getNumbersOfProducts(Long id);
+    int getNumbersOfProductsByCategory(Long id);
+
+    @Query("select count(p) from Product p")
+    int getNumbersOfProducts();
 }

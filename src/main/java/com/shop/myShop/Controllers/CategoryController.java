@@ -2,7 +2,6 @@ package com.shop.myShop.Controllers;
 
 import com.shop.myShop.Entities.Category;
 import com.shop.myShop.Entities.Picture;
-import com.shop.myShop.Entities.Product;
 import com.shop.myShop.Repositories.CategoryRepository;
 import com.shop.myShop.Repositories.PictureRepository;
 import com.shop.myShop.Repositories.ProductRepository;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("categories")
@@ -39,7 +37,7 @@ public class CategoryController {
     ResponseEntity<List<Category>> getCategoriesWithProducts() {
         List<Category> categoryList =  categoryRepository.findAll();
         categoryList.forEach(category -> {
-            category.setNbrProducts(productRepository.getNumbersOfProducts(category.getId()));
+            category.setNbrProducts(productRepository.getNumbersOfProductsByCategory(category.getId()));
         });
         return ResponseEntity.ok(categoryList);
     }

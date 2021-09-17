@@ -7,7 +7,6 @@ import net.kaczmarzyk.spring.data.jpa.domain.*;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -73,6 +72,15 @@ public class ProductController {
             error.put("error", "Product not found");
             return ResponseEntity.badRequest().body(error);
         }
+    }
+
+    @GetMapping("/count")
+    ResponseEntity getNumberOfProducts() {
+        HashMap<String, Integer> countProduct = new HashMap<>();
+        countProduct.put("count", productRepository.getNumbersOfProducts());
+
+        return ResponseEntity.ok(countProduct);
+
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -166,6 +174,7 @@ public class ProductController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     ResponseEntity getAllProducts() {
