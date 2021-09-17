@@ -29,7 +29,15 @@ public class Order {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<OrderItem> orderItems = new HashSet<>();
 
-    @Temporal(TemporalType.DATE)
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn = new Date();
 
     public Long getId() {

@@ -5,6 +5,7 @@ import com.shop.myShop.Entities.Sale;
 import com.shop.myShop.Repositories.ProductRepository;
 import com.shop.myShop.Repositories.SaleRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class SaleController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     ResponseEntity addSale(@RequestBody Sale sale, @PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
@@ -38,6 +40,7 @@ public class SaleController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     ResponseEntity replaceSale(@RequestBody Sale newSale, @PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
@@ -63,13 +66,14 @@ public class SaleController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     ResponseEntity deleteSale(@PathVariable Long id) {
         Map<String, String> error = new HashMap<>();
         Sale sale = saleRepository.findById(id).orElse(null);
         if (sale != null) {
             saleRepository.delete(sale);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(sale);
         } else {
             error.put("error", "Sale not found");
             return ResponseEntity.badRequest().body(error);
