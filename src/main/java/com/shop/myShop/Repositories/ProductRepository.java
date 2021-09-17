@@ -1,5 +1,6 @@
 package com.shop.myShop.Repositories;
 
+import com.shop.myShop.Entities.Category;
 import com.shop.myShop.Entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query("select p from Product p join p.categories c where c.id = ?1 order by p.dateAdded Desc")
     Page<Product> getProductsByCategory(Long id, Pageable pageable, Specification<Product> specification);
 
+    @Query("select count(p) from Product p join p.categories c where c.id = ?1 order by p.dateAdded Desc")
+    int getNumbersOfProducts(Long id);
 }

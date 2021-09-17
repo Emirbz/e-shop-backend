@@ -17,6 +17,17 @@ public class Category {
 
     private String name;
 
+    @Transient
+    private int nbrProducts;
+
+    public int getNbrProducts() {
+        return nbrProducts;
+    }
+
+    public void setNbrProducts(int nbrProducts) {
+        this.nbrProducts = nbrProducts;
+    }
+
     @JsonIgnore
     @ManyToMany(mappedBy = "categories")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -49,6 +60,8 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
+
+
 
 
     public Set<Product> getProducts() {

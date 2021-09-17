@@ -2,8 +2,10 @@ package com.shop.myShop.Controllers;
 
 import com.shop.myShop.Entities.Category;
 import com.shop.myShop.Entities.Picture;
+import com.shop.myShop.Entities.Product;
 import com.shop.myShop.Repositories.CategoryRepository;
 import com.shop.myShop.Repositories.PictureRepository;
+import com.shop.myShop.Repositories.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("categories")
@@ -19,16 +22,26 @@ public class CategoryController {
 
     private final CategoryRepository categoryRepository;
     private final PictureRepository pictureRepository;
+    private final ProductRepository productRepository;
 
-    public CategoryController(CategoryRepository categoryRepository, PictureRepository pictureRepository) {
+    public CategoryController(CategoryRepository categoryRepository, PictureRepository pictureRepository,ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
         this.pictureRepository = pictureRepository;
+        this.productRepository = productRepository;
     }
 
 
     @GetMapping
     ResponseEntity<List<Category>> getCategories() {
         return ResponseEntity.ok(categoryRepository.findAll());
+    }
+    @GetMapping("/products")
+    ResponseEntity<List<Category>> getCategoriesWithProducts() {
+        List<Category> categoryList =  categoryRepository.findAll();
+        categoryList.forEach(category -> {
+            category.setNbrProducts(productRepository.getNumbersOfProducts(category.getId()));
+        });
+        return ResponseEntity.ok(categoryList);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
