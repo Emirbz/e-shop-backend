@@ -1,6 +1,5 @@
 package com.shop.myShop;
 
-import com.shop.myShop.Services.FilesStorageService;
 import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,8 +18,7 @@ import java.util.List;
 public class MyShopApplication implements WebMvcConfigurer, CommandLineRunner {
 
 
-    @Resource
-    FilesStorageService storageService;
+
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -35,6 +33,5 @@ public class MyShopApplication implements WebMvcConfigurer, CommandLineRunner {
     @Override
     public void run(String... arg) {
 //        storageService.deleteAll();
-        storageService.init();
     }
 }
